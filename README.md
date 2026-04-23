@@ -261,7 +261,7 @@ as verificacoes que devemos colocar em todas as entidades
 
 ---
 
-## ⚠️ Diretrizes de Desenvolvimento
+## Diretrizes de Desenvolvimento
 
 * Não expor Entities diretamente
 * Utilizar DTOs em todas as camadas externas
@@ -424,7 +424,7 @@ Este projeto utiliza um padrão de commits para manter o histórico organizado, 
 
 ---
 
-## 📌 Estrutura do Commit
+## Estrutura do Commit
 
 ```bash
 tipo: descrição curta e objetiva
