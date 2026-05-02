@@ -2,14 +2,18 @@ package com.example.demo.dto;
 
 import java.time.LocalDateTime;
 
-import lombok.Data;
+import jakarta.validation.constraints.NotBlank;
 
-@Data
-public class ConsultaRequestDTO {
+public record ConsultaRequestDTO(
 
-    private Long pacienteId;
-    private Long medicoId;
-    private LocalDateTime dataHora;
-    private String observacoes;
+        @NotBlank(message = "ID do Paciente é obrigatório")
+        Long pacienteId,
 
-}
+        @NotBlank(message = "ID do Médico é obrigatório")
+        Long medicoId,
+
+        @NotBlank(message = "Data e hora são obrigatórios")
+        LocalDateTime dataHora,
+
+        String observacoes
+) {}
