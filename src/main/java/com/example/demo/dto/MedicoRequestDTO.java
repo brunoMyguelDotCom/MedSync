@@ -3,7 +3,7 @@ package com.example.demo.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
-public record MedicoDTO(
+public record MedicoRequestDTO(
 
     @NotBlank(message = "Nome é obrigatório")
     String nome,
@@ -17,5 +17,5 @@ public record MedicoDTO(
 
     @NotBlank(message = "Especialidade é obrigatória")
     String especialidade
-    
+
 ) {}
