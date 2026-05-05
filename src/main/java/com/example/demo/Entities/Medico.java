@@ -41,7 +41,7 @@ public class Medico {
     private String crm;
 
     @NotBlank
-    private String especialidade;
+    private Especialidade especialidade;
 
     private Boolean ativo = true;
 }
