@@ -1,5 +1,7 @@
 package com.example.demo.dto;
 
+import com.example.demo.Entities.Especialidade;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
@@ -16,6 +18,6 @@ public record MedicoRequestDTO(
     String crm,
 
     @NotBlank(message = "Especialidade é obrigatória")
-    String especialidade
+    Especialidade especialidade
 
 ) {}
