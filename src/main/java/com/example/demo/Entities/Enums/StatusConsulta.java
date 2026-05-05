@@ -1,4 +1,4 @@
-package com.example.demo.Entities;
+package com.example.demo.Entities.Enums;
 
 public enum StatusConsulta {
     AGENDADA,
