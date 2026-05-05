@@ -5,9 +5,9 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.example.demo.Entities.Consulta;
 import com.example.demo.Entities.Medico;
-import com.example.demo.Entities.StatusConsulta;
+import com.example.demo.Entities.Enums.Consulta;
+import com.example.demo.Entities.Enums.StatusConsulta;
 
 public interface ConsultaRepository extends JpaRepository<Consulta, Long> {
 

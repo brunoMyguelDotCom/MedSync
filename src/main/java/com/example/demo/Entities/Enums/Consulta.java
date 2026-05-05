@@ -1,6 +1,9 @@
-package com.example.demo.Entities;
+package com.example.demo.Entities.Enums;
 
 import java.time.LocalDateTime;
+
+import com.example.demo.Entities.Medico;
+import com.example.demo.Entities.Paciente;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -51,7 +54,6 @@ public class Consulta {
         this.observacoes = observacoes;
         this.status = StatusConsulta.AGENDADA;
     }
-
 
     // metodo cancelamente e conclusao da consulta:
     public void cancelar(LocalDateTime agora) {
