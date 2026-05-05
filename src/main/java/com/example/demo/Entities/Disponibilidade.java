@@ -1,8 +1,7 @@
 package com.example.demo.Entities;
 
+import java.time.DayOfWeek;
 import java.time.LocalTime;
-
-import com.example.demo.Entities.Enums.DiaSemana;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -33,7 +32,7 @@ public class Disponibilidade {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private DiaSemana diaSemana;
+    private DayOfWeek diaSemana;
 
     @Column(nullable = false)
     private LocalTime horarioInicio;
@@ -43,7 +42,7 @@ public class Disponibilidade {
 
     public Disponibilidade() {}
 
-    public Disponibilidade(Medico medico, DiaSemana diaSemana, LocalTime horarioInicio, LocalTime horarioFim) {
+    public Disponibilidade(Medico medico, DayOfWeek diaSemana, LocalTime horarioInicio, LocalTime horarioFim) {
         this.medico = medico;
         this.diaSemana = diaSemana;
         this.horarioInicio = horarioInicio;
