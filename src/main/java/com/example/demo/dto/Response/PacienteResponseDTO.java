@@ -8,15 +8,4 @@ public record PacienteResponseDTO(
     String cpf,
     String telefone,
     String email
-) {
-    // Construtor que recebe uma entidade e mapeia os campos
-    public PacienteResponseDTO(Paciente paciente){
-        this(
-            paciente.getId(),
-            paciente.getNome(),
-            paciente.getCpf(),
-            paciente.getTelefone(),
-            paciente.getEmail()
-        );
-    }
-}
+) {}
