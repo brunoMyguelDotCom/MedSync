@@ -3,6 +3,6 @@ package com.example.demo.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import com.example.demo.Entities.Especialidade;
 
-public interface EspecialidadeRepository extends JpaRepository<Especialidade, Long>{
-    
-} 
+public interface EspecialidadeRepository extends JpaRepository<Especialidade, Long> {
+
+}
