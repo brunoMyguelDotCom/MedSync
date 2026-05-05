@@ -40,7 +40,8 @@ public class Disponibilidade {
     @Column(nullable = false)
     private LocalTime horarioFim;
 
-    public Disponibilidade() {}
+    public Disponibilidade() {
+    }
 
     public Disponibilidade(Medico medico, DayOfWeek diaSemana, LocalTime horarioInicio, LocalTime horarioFim) {
         this.medico = medico;

@@ -3,8 +3,6 @@ package com.example.demo.dto.Response;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 
-import com.example.demo.Entities.Disponibilidade;
-
 public record DisponibilidadeResponseDTO(
 
     Long id,
@@ -13,5 +11,4 @@ public record DisponibilidadeResponseDTO(
     LocalTime horarioInicio,
     LocalTime horarioFim
 
-) {
-}
+) {}
