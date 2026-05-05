@@ -2,6 +2,8 @@ package com.example.demo.Entities;
 
 import java.time.LocalTime;
 
+import com.example.demo.Entities.Enums.DiaSemana;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

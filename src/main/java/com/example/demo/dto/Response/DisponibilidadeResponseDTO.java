@@ -3,7 +3,7 @@ package com.example.demo.dto.Response;
 import java.time.LocalTime;
 
 import com.example.demo.Entities.Disponibilidade;
-import com.example.demo.Entities.DiaSemana;
+import com.example.demo.Entities.Enums.DiaSemana;
 
 public record DisponibilidadeResponseDTO(
 

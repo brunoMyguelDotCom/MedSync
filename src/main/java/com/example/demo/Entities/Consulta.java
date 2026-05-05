@@ -1,9 +1,8 @@
-package com.example.demo.Entities.Enums;
+package com.example.demo.Entities;
 
 import java.time.LocalDateTime;
 
-import com.example.demo.Entities.Medico;
-import com.example.demo.Entities.Paciente;
+import com.example.demo.Entities.Enums.StatusConsulta;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
