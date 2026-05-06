@@ -9,6 +9,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
@@ -16,6 +17,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(of = "id")
 
 public class Especialidade {
@@ -26,14 +28,4 @@ public class Especialidade {
 
     @NotBlank
     private String nome;
-
-    public Especialidade(Long id, String nome) {
-        this.id = id;
-        this.nome = nome;
-    }
-
-    public Especialidade() {
-
-    }
-
 }
