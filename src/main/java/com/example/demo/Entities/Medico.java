@@ -10,6 +10,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -42,7 +43,7 @@ public class Medico {
     @Column(unique = true)
     private String crm;
 
-    @NotBlank
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "especialidade_id")
     private Especialidade especialidade;
