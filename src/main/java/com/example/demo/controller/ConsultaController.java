@@ -11,8 +11,6 @@ import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-
 
 @RestController
 @RequestMapping("/consultas")
@@ -43,7 +41,7 @@ public class ConsultaController {
     // para o listar todos, a mesma coisa, como vai LISTAR, vamos retornar dentro do ApiResponse uma LISTA de ConsultaResponseDTO:
     public ApiResponse<List<ConsultaResponseDTO>> listaTodos() {
 
-        return consultaService.listaTodos();
+        return consultaService.listarTodos();
     }
 
 }

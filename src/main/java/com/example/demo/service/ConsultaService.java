@@ -43,7 +43,7 @@ public class ConsultaService {
         return new ApiResponse<>(dto);
     }
 
-    public ApiResponse<List<ConsultaResponseDTO>> listaTodos() {
+    public ApiResponse<List<ConsultaResponseDTO>> listarTodos() {
       
         // Uso de Stream para converter a lista de consultas em uma lista de ConsultaResponseDTO
         List<ConsultaResponseDTO> consultas = consultaRepository.findAll()
