@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.Entities.Consulta;
 import com.example.demo.dto.Response.ConsultaResponseDTO;
+import com.example.demo.mapper.ConsultaMapper;
 import com.example.demo.repository.ConsultaRepository;
 import com.example.demo.service.Utils.ApiResponse;
 
@@ -31,13 +32,15 @@ public class ConsultaService {
                 .orElseThrow(() -> new RuntimeException("Consulta não encontrada"));
 
         // depois criamos o DTO usando os dados da consulta acima
-        ConsultaResponseDTO dto = new ConsultaResponseDTO(
+        /* ConsultaResponseDTO dto = new ConsultaResponseDTO(
                 consulta.getId(),
                 consulta.getPaciente().getNome(),
                 consulta.getMedico().getNome(),
                 consulta.getDataHora(),
                 consulta.getStatus(),
-                consulta.getObservacoes());
+                consulta.getObservacoes()); */
+
+            ConsultaResponseDTO dto = ConsultaMapper.consultaResponseDTO(consulta);
 
         // por fim, retornamos o ApiResponse com o DTO dentro
         return new ApiResponse<>(dto);
@@ -48,14 +51,18 @@ public class ConsultaService {
         // Uso de Stream para converter a lista de consultas em uma lista de ConsultaResponseDTO
         List<ConsultaResponseDTO> consultas = consultaRepository.findAll()
         .stream()
-        .map(consulta -> new ConsultaResponseDTO(
+        .map(ConsultaMapper::consultaResponseDTO)
+        .toList();
+
+        /* .map(consulta -> new ConsultaResponseDTO(
                 consulta.getId(),
                 consulta.getPaciente().getNome(),
                 consulta.getMedico().getNome(),
                 consulta.getDataHora(),
                 consulta.getStatus(),
                 consulta.getObservacoes()
-        )).toList();
+        )).toList(); */
+
 
         // Retorna a lista de ConsultaResponseDTO dentro do ApiResponse
         return new ApiResponse<>(consultas);
