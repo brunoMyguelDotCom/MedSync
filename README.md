@@ -1,5 +1,347 @@
 # MedSync - Backend
 
+
+
+#PATTERN DA SEGUNDA ETAPA:
+
+# Padronização de Desenvolvimento da API
+
+Este projeto utiliza uma arquitetura padronizada para facilitar manutenção, leitura do código e continuidade do desenvolvimento entre múltiplos desenvolvedores.
+
+---
+
+# Fluxo da Aplicação
+
+Toda requisição segue o seguinte fluxo:
+
+```text
+Controller -> Service -> Repository -> Banco de Dados
+```
+
+Após buscar os dados:
+
+```text
+Banco de Dados -> Service -> Mapper -> DTO -> Controller -> Cliente
+```
+
+Cada camada possui uma responsabilidade específica.
+
+---
+
+# Controller
+
+A camada `Controller` é responsável por receber requisições HTTP e retornar respostas para o cliente.
+
+Ela NÃO deve conter regra de negócio.
+
+## Exemplo
+
+```java
+@GetMapping("/{id}")
+public ResponseEntity<ApiResponse<ConsultaResponseDTO>> listarPorId(@PathVariable Long id) {
+
+    var response = consultaService.listarPorId(id);
+
+    return ResponseEntity.ok(response);
+}
+```
+
+## O que acontece aqui?
+
+1. O endpoint recebe o `id`
+2. A controller chama o `Service`
+3. O resultado é retornado usando `ResponseEntity`
+
+---
+
+# Por que usar ResponseEntity?
+
+O `ResponseEntity` permite controlar:
+
+* Status HTTP
+* Headers
+* Corpo da resposta
+
+Sem ele, a API perde flexibilidade para respostas futuras.
+
+## Exemplo
+
+```java
+return ResponseEntity.ok(response);
+```
+
+Retorna:
+
+```http
+200 OK
+```
+
+Outro exemplo:
+
+```java
+return ResponseEntity.status(HttpStatus.CREATED).body(response);
+```
+
+Retorna:
+
+```http
+201 CREATED
+```
+
+Isso melhora a padronização e deixa a API mais profissional.
+
+---
+
+# Service
+
+A camada `Service` contém as regras de negócio da aplicação.
+
+Responsabilidades:
+
+* Validar regras
+* Buscar dados
+* Chamar repositories
+* Converter entidades usando Mapper
+* Retornar dados padronizados
+
+## Exemplo
+
+```java
+public ApiResponse<ConsultaResponseDTO> listarPorId(Long id) {
+
+    Consulta consulta = consultaRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Consulta não encontrada"));
+
+    ConsultaResponseDTO dto = ConsultaMapper.toConsultaResponseDTO(consulta);
+
+    return new ApiResponse<>(dto);
+}
+```
+
+## Fluxo desse método
+
+1. Busca consulta no banco
+2. Caso não exista, lança erro
+3. Converte Entidade para DTO
+4. Retorna resposta padronizada
+
+---
+
+# Repository
+
+A camada `Repository` é responsável pelo acesso ao banco de dados.
+
+Exemplo:
+
+```java
+consultaRepository.findById(id)
+```
+
+Ela abstrai SQL manual e utiliza JPA/Spring Data.
+
+---
+
+# Mapper
+
+O `Mapper` centraliza conversões entre:
+
+* Entidades
+* RequestDTO
+* ResponseDTO
+
+Isso evita repetição de código.
+
+## Exemplo
+
+```java
+public static ConsultaResponseDTO toConsultaResponseDTO(Consulta consulta) {
+
+    return new ConsultaResponseDTO(
+            consulta.getId(),
+            consulta.getPaciente().getNome(),
+            consulta.getMedico().getNome(),
+            consulta.getDataHora(),
+            consulta.getStatus(),
+            consulta.getObservacoes());
+}
+```
+
+## Por que usar Mapper?
+
+Sem Mapper:
+
+* Conversões ficam espalhadas
+* Código fica repetitivo
+* Manutenção fica difícil
+
+Com Mapper:
+
+* Conversão fica centralizada
+* Facilita manutenção
+* Padroniza respostas
+
+---
+
+# DTOs
+
+DTO significa:
+
+```text
+Data Transfer Object
+```
+
+São objetos usados para transportar dados.
+
+## Tipos utilizados
+
+### RequestDTO
+
+Recebe dados enviados pelo cliente.
+
+Exemplo:
+
+```java
+ConsultaRequestDTO
+```
+
+---
+
+### ResponseDTO
+
+Define os dados enviados ao cliente.
+
+Exemplo:
+
+```java
+ConsultaResponseDTO
+```
+
+---
+
+# Por que NÃO retornar Entidades?
+
+Errado:
+
+```java
+return consulta;
+```
+
+Problemas:
+
+* Exposição de dados desnecessários
+* Acoplamento ao banco
+* Risco de loops em relacionamentos
+* Dificulta manutenção futura
+
+Correto:
+
+```java
+return ConsultaMapper.toConsultaResponseDTO(consulta);
+```
+
+---
+
+# ApiResponse
+
+Toda resposta da API deve utilizar:
+
+```java
+ApiResponse<T>
+```
+
+## Estrutura
+
+```java
+public class ApiResponse<T> {
+
+    private boolean success;
+    private T data;
+    private ErrorResponse error;
+
+}
+```
+
+---
+
+# Por que usar ApiResponse?
+
+O objetivo é padronizar TODAS as respostas da API.
+
+Sem padronização:
+
+* Cada endpoint retorna diferente
+* Frontend precisa tratar vários formatos
+* Dificulta manutenção
+
+Com ApiResponse:
+
+* Todas respostas seguem o mesmo padrão
+* Facilita integração frontend
+* Facilita tratamento de erros
+* Facilita logs e monitoramento
+
+---
+
+# Exemplo de Sucesso
+
+```json
+{
+  "success": true,
+  "data": {
+    "id": 1,
+    "paciente": "João"
+  },
+  "error": null
+}
+```
+
+---
+
+# Exemplo de Erro
+
+```json
+{
+  "success": false,
+  "data": null,
+  "error": {
+    "message": "Consulta não encontrada"
+  }
+}
+```
+
+---
+
+# Uso do var
+
+Sempre que o tipo for evidente:
+
+```java
+var response = consultaService.listarTodos();
+```
+
+## Por que usar var?
+
+* Reduz repetição
+* Código fica mais limpo
+* Mantém legibilidade
+
+Evitar quando o tipo não estiver claro.
+
+---
+
+# Objetivo Final da Padronização
+
+Esta estrutura foi criada para:
+
+* Facilitar manutenção
+* Melhorar leitura do código
+* Reduzir duplicação
+* Padronizar respostas
+* Melhorar escalabilidade
+* Facilitar entrada de novos desenvolvedores
+* Organizar responsabilidades de cada camada
+
+
 ## Objetivo
 
 Fornecer uma base sólida para:
