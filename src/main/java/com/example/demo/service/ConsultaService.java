@@ -5,66 +5,71 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.Entities.Consulta;
+import com.example.demo.Entities.Medico;
+import com.example.demo.Entities.Paciente;
+import com.example.demo.dto.Request.ConsultaRequestDTO;
 import com.example.demo.dto.Response.ConsultaResponseDTO;
 import com.example.demo.mapper.ConsultaMapper;
 import com.example.demo.repository.ConsultaRepository;
+import com.example.demo.repository.MedicoRepository;
+import com.example.demo.repository.PacienteRepository;
 import com.example.demo.service.Utils.ApiResponse;
 
 @Service
 public class ConsultaService {
 
-    // atributo / variavel pra receber o service
+    // Atributos para receber os repositories
+    private final PacienteRepository pacienteRepository;
+    private final MedicoRepository medicoRepository;
     private final ConsultaRepository consultaRepository;
 
-    // construtor para injetar o service
-    public ConsultaService(ConsultaRepository consultaRepository) {
+    // Construtor para injetar os repositories
+    public ConsultaService(PacienteRepository pacienteRepository, MedicoRepository medicoRepository,
+            ConsultaRepository consultaRepository) {
+        this.pacienteRepository = pacienteRepository;
+        this.medicoRepository = medicoRepository;
         this.consultaRepository = consultaRepository;
     }
 
-    // retorna ApiResponse com ConsultaResponseDTO dentro , mesma coisa do
-    // Controller
+    // Método para listar consulta por ID
     public ApiResponse<ConsultaResponseDTO> listarPorId(Long id) {
 
-        // logica de criacao:
-        // criamos uma consulta chamando repository com funcao do JPA (findById), e
-        // sempre colocamos o OrElseThrow pra caso nao encontre a consulta
         Consulta consulta = consultaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Consulta não encontrada"));
 
-        // depois criamos o DTO usando os dados da consulta acima
-        /* ConsultaResponseDTO dto = new ConsultaResponseDTO(
-                consulta.getId(),
-                consulta.getPaciente().getNome(),
-                consulta.getMedico().getNome(),
-                consulta.getDataHora(),
-                consulta.getStatus(),
-                consulta.getObservacoes()); */
-
-            ConsultaResponseDTO dto = ConsultaMapper.consultaResponseDTO(consulta);
+        ConsultaResponseDTO dto = ConsultaMapper.toConsultaResponseDTO(consulta);
 
         // por fim, retornamos o ApiResponse com o DTO dentro
         return new ApiResponse<>(dto);
     }
 
+    // Método para listar todas as consultas
     public ApiResponse<List<ConsultaResponseDTO>> listarTodos() {
-      
-        // Uso de Stream para converter a lista de consultas em uma lista de ConsultaResponseDTO
+
         List<ConsultaResponseDTO> consultas = consultaRepository.findAll()
-        .stream()
-        .map(ConsultaMapper::consultaResponseDTO)
-        .toList();
+                .stream()
+                .map(ConsultaMapper::toConsultaResponseDTO)
+                .toList();
 
-        /* .map(consulta -> new ConsultaResponseDTO(
-                consulta.getId(),
-                consulta.getPaciente().getNome(),
-                consulta.getMedico().getNome(),
-                consulta.getDataHora(),
-                consulta.getStatus(),
-                consulta.getObservacoes()
-        )).toList(); */
-
-
-        // Retorna a lista de ConsultaResponseDTO dentro do ApiResponse
         return new ApiResponse<>(consultas);
+    }
+
+    // Método para criar uma nova consulta
+    public ApiResponse<ConsultaResponseDTO> criarConsulta(Long id, ConsultaRequestDTO consultaRequestDTO) {
+
+        Paciente paciente = pacienteRepository.findById(consultaRequestDTO.pacienteId())
+                .orElseThrow(() -> new RuntimeException("Paciente não encontrado"));
+
+        Medico medico = medicoRepository.findById(consultaRequestDTO.medicoId())
+                .orElseThrow(() -> new RuntimeException("Médico não encontrado"));
+
+        Consulta consulta = new ConsultaMapper().toEntityConsulta(consultaRequestDTO, paciente, medico);
+
+        consultaRepository.save(consulta);
+
+        ConsultaResponseDTO dto = ConsultaMapper.toConsultaResponseDTO(consulta);
+
+        return new ApiResponse<>(dto);
+
     }
 }
