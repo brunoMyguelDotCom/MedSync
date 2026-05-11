@@ -3,45 +3,60 @@ package com.example.demo.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.dto.Request.ConsultaRequestDTO;
 import com.example.demo.dto.Response.ConsultaResponseDTO;
 import com.example.demo.service.ConsultaService;
 import com.example.demo.service.Utils.ApiResponse;
 
+import lombok.experimental.var;
+
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping("/consultas")
 public class ConsultaController {
 
-    // padrao de projeto que vamos usar:
-
-    // atributo / variavel pra receber o service
+    // Atributo para receber o service
     private final ConsultaService consultaService;
 
-    // construtor para injetar o service
+    // Construtor para injetar o service
     public ConsultaController(ConsultaService consultaService) {
         this.consultaService = consultaService;
     }
 
-    // endpoint para listar consulta por id
+    // Endpoint para listar consulta por ID
     @GetMapping("/{id}")
-    // esse retorno "ApiResponse<>" ja estava criado pelo Fabricio, todo retorno de funcao do controller vai ser desse tipo (segure control e clique encima do ApiResponse<> pra ver a classe)
+    public ResponseEntity<ApiResponse<ConsultaResponseDTO>> listarPorId(@PathVariable Long id) {
 
-    // o que tem dentro do "<>" é o tipo RESPONSEDTO que cada classe tem (dentro de controller tambem seque esse padrao)
-    public ApiResponse<ConsultaResponseDTO> listarPorId(@PathVariable Long id) {
+        var response = consultaService.listarPorId(id);
 
-        // ou seja, controller chama o service, o service retorna o DTO usando o ApiResponse, e o controller retorna esse ApiResponse pro cliente (frontend)
-        return consultaService.listarPorId(id);
+        return ResponseEntity.ok(response);
     }
 
+    // Endpoint para listar todas as consultas
     @GetMapping()
-    // para o listar todos, a mesma coisa, como vai LISTAR, vamos retornar dentro do ApiResponse uma LISTA de ConsultaResponseDTO:
-    public ApiResponse<List<ConsultaResponseDTO>> listaTodos() {
+    public ResponseEntity<ApiResponse<List<ConsultaResponseDTO>>> listaTodos() {
 
-        return consultaService.listarTodos();
+        var response = consultaService.listarTodos();
+
+        return ResponseEntity.ok(response);
+    }
+
+    // Endpoint para criar uma nova consulta
+    @PostMapping("/{id}")
+    public ResponseEntity<ApiResponse<ConsultaResponseDTO>> criarConsulta(@PathVariable Long id,
+            @RequestBody ConsultaRequestDTO consultaRequestDTO) {
+
+        var response = consultaService.criarConsulta(id, consultaRequestDTO);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
 }
