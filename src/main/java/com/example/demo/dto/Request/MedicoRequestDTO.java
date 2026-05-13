@@ -1,23 +1,18 @@
 package com.example.demo.dto.Request;
 
-import com.example.demo.Entities.Especialidade;
 
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public record MedicoRequestDTO(
 
     @NotBlank(message = "Nome é obrigatório")
     String nome,
 
-    @NotBlank(message = "Email é obrigatório")
-    @Email(message = "Email inválido")
-    String email,
-
     @NotBlank(message = "CRM é obrigatório")
     String crm,
 
-    @NotBlank(message = "Especialidade é obrigatória")
-    Especialidade especialidade
+    @NotNull(message = "Especialidade é obrigatória")
+    Long especialidadeId
 
 ) {}
