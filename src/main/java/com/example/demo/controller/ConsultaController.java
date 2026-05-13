@@ -51,7 +51,8 @@ public class ConsultaController {
 
     // Endpoint para criar uma nova consulta
     @PostMapping
-    public ResponseEntity<ApiResponse<ConsultaResponseDTO>> criarConsulta(@RequestBody ConsultaRequestDTO consultaRequestDTO) {
+    public ResponseEntity<ApiResponse<ConsultaResponseDTO>> criarConsulta(
+            @RequestBody ConsultaRequestDTO consultaRequestDTO) {
 
         var response = consultaService.criarConsulta(consultaRequestDTO);
 
