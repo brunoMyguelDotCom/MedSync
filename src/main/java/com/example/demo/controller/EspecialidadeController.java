@@ -27,10 +27,10 @@ public class EspecialidadeController {
         this.especialidadeService = especialidadeService;
     }
     
-    @PostMapping("/{id}")
-    public ResponseEntity<ApiResponse<EspecialidadeResponseDTO>> criarEspecialidade (@PathVariable Long id, @RequestBody EspecialidadeRequestDTO especialidadeRequestDTO) {
+    @PostMapping
+    public ResponseEntity<ApiResponse<EspecialidadeResponseDTO>> criarEspecialidade (@RequestBody EspecialidadeRequestDTO especialidadeRequestDTO) {
         
-        var response = especialidadeService.criarEspecialidade(id, especialidadeRequestDTO);
+        var response = especialidadeService.criarEspecialidade(especialidadeRequestDTO);
         
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }

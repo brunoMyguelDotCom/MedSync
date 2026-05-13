@@ -15,8 +15,7 @@ public class EspecialidadeService {
         this.especialidadeRepository = especialidadeRepository;
     }
 
-    public ApiResponse<EspecialidadeResponseDTO> criarEspecialidade(Long id,
-            EspecialidadeRequestDTO especialidadeRequestDTO) {
+    public ApiResponse<EspecialidadeResponseDTO> criarEspecialidade(EspecialidadeRequestDTO especialidadeRequestDTO) {
 
         Especialidade especialidade = new EspecialidadeMapper().toEntityEspecialidade(especialidadeRequestDTO);
 
