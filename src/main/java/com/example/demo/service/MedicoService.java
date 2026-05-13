@@ -22,21 +22,21 @@ public class MedicoService {
         this.especialidadeRepository = especialidadeRepository;
     }
 
-    //CRIAR MEDICO
+    // CRIAR MEDICO
     public ApiResponse<MedicoResponseDTO> criarMedico(MedicoRequestDTO medicoRequestDTO) {
 
-    Especialidade especialidade = especialidadeRepository.findById(medicoRequestDTO.especialidadeId())
-        .orElseThrow(() -> new RuntimeException("Especialidade não encontrada"));
+        Especialidade especialidade = especialidadeRepository.findById(medicoRequestDTO.especialidadeId())
+                .orElseThrow(() -> new RuntimeException("Especialidade não encontrada"));
 
-    Medico medico = MedicoMapper.toEntityMedico(medicoRequestDTO);
-    medico.setEspecialidade(especialidade);
+        Medico medico = MedicoMapper.toEntityMedico(medicoRequestDTO);
+        medico.setEspecialidade(especialidade);
 
-    medicoRepository.save(medico);
+        medicoRepository.save(medico);
 
-    MedicoResponseDTO response = MedicoMapper.toMedicoResponseDTO(medico);
+        MedicoResponseDTO response = MedicoMapper.toMedicoResponseDTO(medico);
 
-    return new ApiResponse<>(response); // só passa o dado
-}
+        return new ApiResponse<>(response); // só passa o dado
+    }
     // listar medico
     // buscar medico
     // atualizar medico
