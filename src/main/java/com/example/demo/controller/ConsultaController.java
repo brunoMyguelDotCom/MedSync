@@ -41,7 +41,7 @@ public class ConsultaController {
     }
 
     // Endpoint para listar todas as consultas
-    @GetMapping()
+    @GetMapping
     public ResponseEntity<ApiResponse<List<ConsultaResponseDTO>>> listaTodos() {
 
         var response = consultaService.listarTodos();
@@ -50,11 +50,11 @@ public class ConsultaController {
     }
 
     // Endpoint para criar uma nova consulta
-    @PostMapping("/{id}")
-    public ResponseEntity<ApiResponse<ConsultaResponseDTO>> criarConsulta(@PathVariable Long id,
+    @PostMapping
+    public ResponseEntity<ApiResponse<ConsultaResponseDTO>> criarConsulta(
             @RequestBody ConsultaRequestDTO consultaRequestDTO) {
 
-        var response = consultaService.criarConsulta(id, consultaRequestDTO);
+        var response = consultaService.criarConsulta(consultaRequestDTO);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }

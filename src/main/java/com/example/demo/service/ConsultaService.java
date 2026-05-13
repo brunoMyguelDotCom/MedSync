@@ -55,7 +55,7 @@ public class ConsultaService {
     }
 
     // Método para criar uma nova consulta
-    public ApiResponse<ConsultaResponseDTO> criarConsulta(Long id, ConsultaRequestDTO consultaRequestDTO) {
+    public ApiResponse<ConsultaResponseDTO> criarConsulta(ConsultaRequestDTO consultaRequestDTO) {
 
         Paciente paciente = pacienteRepository.findById(consultaRequestDTO.pacienteId())
                 .orElseThrow(() -> new RuntimeException("Paciente não encontrado"));
