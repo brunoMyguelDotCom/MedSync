@@ -8,10 +8,10 @@ public class MedicoMapper {
 
     public static MedicoResponseDTO toMedicoResponseDTO(Medico medico) {
         return new MedicoResponseDTO(
-            medico.getId(),
-            medico.getNome(),
-            medico.getCrm(),
-            medico.getEspecialidade().getNome() // retorna só o nome
+                medico.getId(),
+                medico.getNome(),
+                medico.getCrm(),
+                medico.getEspecialidade().getNome() // retorna só o nome
         );
     }
 

@@ -41,7 +41,7 @@ public class ConsultaController {
     }
 
     // Endpoint para listar todas as consultas
-    @GetMapping()
+    @GetMapping
     public ResponseEntity<ApiResponse<List<ConsultaResponseDTO>>> listaTodos() {
 
         var response = consultaService.listarTodos();
