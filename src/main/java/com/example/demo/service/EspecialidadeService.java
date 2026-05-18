@@ -1,5 +1,7 @@
 package com.example.demo.service;
 
+import org.springframework.stereotype.Service;
+
 import com.example.demo.Entities.Especialidade;
 import com.example.demo.dto.Request.EspecialidadeRequestDTO;
 import com.example.demo.dto.Response.EspecialidadeResponseDTO;
@@ -7,6 +9,7 @@ import com.example.demo.service.Utils.ApiResponse;
 import com.example.demo.mapper.EspecialidadeMapper;
 import com.example.demo.repository.EspecialidadeRepository;
 
+@Service
 public class EspecialidadeService {
 
     private final EspecialidadeRepository especialidadeRepository;

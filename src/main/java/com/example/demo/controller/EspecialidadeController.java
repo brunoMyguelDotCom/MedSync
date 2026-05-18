@@ -8,7 +8,7 @@ import com.example.demo.dto.Response.EspecialidadeResponseDTO;
 import com.example.demo.service.EspecialidadeService;
 import com.example.demo.service.Utils.ApiResponse;
 
-import lombok.experimental.var;
+
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
