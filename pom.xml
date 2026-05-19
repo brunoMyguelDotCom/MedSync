@@ -113,11 +113,27 @@
                 <source>${java.version}</source>
                 <target>${java.version}</target>
                 <annotationProcessorPaths>
-                    <path>
-                        <groupId>org.mapstruct</groupId>
-                        <artifactId>mapstruct-processor</artifactId>
-                        <version>1.5.5.Final</version>
-                    </path>
+                     <!-- Lombok -->
+    <path>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok</artifactId>
+        <version>1.18.30</version>
+    </path>
+
+    <!-- MapStruct -->
+    <path>
+        <groupId>org.mapstruct</groupId>
+        <artifactId>mapstruct-processor</artifactId>
+        <version>1.5.5.Final</version>
+    </path>
+
+    <!-- Integração Lombok + MapStruct -->
+    <path>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok-mapstruct-binding</artifactId>
+        <version>0.2.0</version>
+    </path>
+
                 </annotationProcessorPaths>
             </configuration>
         </plugin>
