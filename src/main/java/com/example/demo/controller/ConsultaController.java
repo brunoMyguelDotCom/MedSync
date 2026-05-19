@@ -10,10 +10,12 @@ import com.example.demo.service.Utils.ApiResponse;
 
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -56,6 +58,16 @@ public class ConsultaController {
         var response = consultaService.criarConsulta(consultaRequestDTO);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<ApiResponse<ConsultaResponseDTO>> atualizarStatus(
+            @PathVariable long id,
+
+            // dentro do JSAON, ex: "status" : "CONCLUIDA"
+            @RequestBody Map<String, String> body) {
+        String novoStatus = body.get("status");
+        return ResponseEntity.ok(consultaService.atualizarStatus(id, novoStatus));
     }
 
 }
