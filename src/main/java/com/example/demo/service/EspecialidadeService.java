@@ -9,6 +9,7 @@ import com.example.demo.service.Utils.ApiResponse;
 import com.example.demo.mapper.EspecialidadeMapper;
 import com.example.demo.repository.EspecialidadeRepository;
 
+@Service
 public class EspecialidadeService {
 
     private final EspecialidadeRepository especialidadeRepository;
