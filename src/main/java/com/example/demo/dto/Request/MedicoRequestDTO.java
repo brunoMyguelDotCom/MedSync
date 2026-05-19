@@ -9,7 +9,7 @@ public record MedicoRequestDTO(
 
         @NotBlank(message = "CRM é obrigatório") String crm,
 
-        @NotNull(message = "Especialidade é obrigatória") Long especialidadeId
+        @NotNull(message = "Especialidade é obrigatória") Long especialidadeId  
 
 ) {
 }

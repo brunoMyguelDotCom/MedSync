@@ -10,6 +10,9 @@ import com.example.demo.Entities.Medico;
 
 public interface DisponibilidadeRepository extends JpaRepository<Disponibilidade, Long> {
 
+    //Validar se medico existe
+    boolean existsByMedico(Medico medico);
+
     // listar disponibilidades do medico
     List<Disponibilidade> findByMedico(Medico medico);
 
