@@ -25,6 +25,7 @@ public class PacienteService {
         this.consultaRepository = consultaRepository;
     }
 
+    // Método para criar um novo paciente
     public ApiResponse<PacienteResponseDTO> criarPaciente(PacienteRequestDTO pacienteRequestDTO) {
         Paciente paciente = PacienteMapper.toEntityPaciente(pacienteRequestDTO);
         pacienteRepository.save(paciente);
@@ -32,6 +33,7 @@ public class PacienteService {
         return new ApiResponse<>(response);
     }
 
+    // Método para listar todos os pacientes com paginação opcional
     public ApiResponse<List<PacienteResponseDTO>> listarTodos(Integer page, Integer size) {
         List<PacienteResponseDTO> pacientes;
         if (page != null && size != null) {
@@ -48,12 +50,14 @@ public class PacienteService {
         return new ApiResponse<>(pacientes);
     }
 
+    // Método para buscar um paciente por ID
     public ApiResponse<PacienteResponseDTO> buscarPorId(Long id) {
         return pacienteRepository.findById(id)
                 .map(paciente -> new ApiResponse<>(PacienteMapper.toPacienteResponseDTO(paciente)))
                 .orElseGet(() -> new ApiResponse<>(new ErrorResponse("Not Found", "Paciente não encontrado")));
     }
 
+    // Método para atualizar um paciente existente
     public ApiResponse<PacienteResponseDTO> atualizarPaciente(Long id, PacienteRequestDTO pacienteRequestDTO) {
         return pacienteRepository.findById(id)
                 .map(paciente -> {
@@ -66,6 +70,7 @@ public class PacienteService {
                 .orElseGet(() -> new ApiResponse<>(new ErrorResponse("Not Found", "Paciente não encontrado")));
     }
 
+    // Método para remover um paciente, verificando se ele tem consultas agendadas
     public ApiResponse<String> removerPaciente(Long id) {
         return pacienteRepository.findById(id)
                 .map(paciente -> {
