@@ -11,7 +11,7 @@ public class EspecialidadeService {
 
     private final EspecialidadeRepository especialidadeRepository;
 
-    public EspecialidadeService(EspecialidadeRepository especialidadeRepository){
+    public EspecialidadeService(EspecialidadeRepository especialidadeRepository) {
         this.especialidadeRepository = especialidadeRepository;
     }
 
