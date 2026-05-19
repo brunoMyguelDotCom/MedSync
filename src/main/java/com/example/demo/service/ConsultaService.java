@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -72,4 +73,29 @@ public class ConsultaService {
         return new ApiResponse<>(dto);
 
     }
+
+    public ApiResponse<ConsultaResponseDTO> atualizarStatus(long id, String novoStatus) {
+
+        Consulta consulta = consultaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Consulta não encontrada"));
+
+        switch (novoStatus.toUpperCase()) {
+            case "CANCELADA":
+                consulta.cancelar(LocalDateTime.now());
+                break;
+
+            case "CONCLUIDA":
+                consulta.concluir();
+                break;
+
+            default:
+                throw new RuntimeException("Status inválido: " + novoStatus);
+
+        }
+
+        consultaRepository.save(consulta);
+
+        return new ApiResponse<>(ConsultaMapper.toConsultaResponseDTO(consulta));
+    }
+
 }
