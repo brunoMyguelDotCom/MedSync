@@ -1,6 +1,6 @@
 package com.example.demo.service;
 
-import org.springframework.stereotype.Service;
+import java.util.List;
 
 import com.example.demo.Entities.Especialidade;
 import com.example.demo.dto.Request.EspecialidadeRequestDTO;
@@ -14,7 +14,7 @@ public class EspecialidadeService {
 
     private final EspecialidadeRepository especialidadeRepository;
 
-    public EspecialidadeService(EspecialidadeRepository especialidadeRepository){
+    public EspecialidadeService(EspecialidadeRepository especialidadeRepository) {
         this.especialidadeRepository = especialidadeRepository;
     }
 
@@ -29,4 +29,51 @@ public class EspecialidadeService {
         return new ApiResponse<>(dto);
     }
 
+    // Listar Especialidade
+    public ApiResponse<List<EspecialidadeResponseDTO>> listarEspecialidade() {
+
+        List<EspecialidadeResponseDTO> especialidades = especialidadeRepository.findAll()
+                .stream()
+                .map(EspecialidadeMapper::toEspecialidadeResponseDTO)
+                .toList();
+
+        return new ApiResponse<>(especialidades);
+
+    }
+
+    // Buscar Especialidade
+    public ApiResponse<EspecialidadeResponseDTO> buscarPorId(long id) {
+        Especialidade especialidade = especialidadeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Especialidade nao encontrada"));
+
+        EspecialidadeResponseDTO dto = EspecialidadeMapper.toEspecialidadeResponseDTO(especialidade);
+
+        return new ApiResponse<>(dto);
+    }
+
+    // Atualizar especialidade
+    public ApiResponse<EspecialidadeResponseDTO> atualizarEspecialidade(Long id, EspecialidadeRequestDTO dto) {
+
+        Especialidade especialidade = especialidadeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Especialidade não encontrada"));
+
+        especialidade.setNome(dto.nome());
+
+        especialidadeRepository.save(especialidade);
+
+        EspecialidadeResponseDTO responseDTO = EspecialidadeMapper.toEspecialidadeResponseDTO(especialidade);
+
+        return new ApiResponse<>(responseDTO);
+    }
+
+    // Deletar especialidade
+    public ApiResponse<String> deletarEspecialidade(Long id) {
+
+        Especialidade especialidade = especialidadeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Especialidade não encontrada"));
+
+        especialidadeRepository.delete(especialidade);
+
+        return new ApiResponse<>("Especialidade removida com sucesso");
+    }
 }
