@@ -1,9 +1,11 @@
 package com.example.demo.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.example.demo.Entities.Consulta;
 import com.example.demo.Entities.Especialidade;
 import com.example.demo.Entities.Medico;
 import com.example.demo.dto.Request.MedicoRequestDTO;
@@ -21,12 +23,15 @@ public class MedicoService {
     private final DisponibilidadeRepository disponibilidadeRepository;
     private final MedicoRepository medicoRepository;
     private final EspecialidadeRepository especialidadeRepository;
+    private final ConsultaRepository consultaRepository;
 
     public MedicoService(MedicoRepository medicoRepository, EspecialidadeRepository especialidadeRepository,
-            DisponibilidadeRepository disponibilidadeRepository) {
+            DisponibilidadeRepository disponibilidadeRepository, ConsultaRepository consultaRepository) {
+
         this.medicoRepository = medicoRepository;
         this.especialidadeRepository = especialidadeRepository;
         this.disponibilidadeRepository = disponibilidadeRepository;
+        this.consultaRepository = consultaRepository;
     }
 
     // CRIAR MEDICO
@@ -58,7 +63,7 @@ public class MedicoService {
 
         if (Boolean.TRUE.equals(disponivel)) {
             medicos = medicos.stream()
-                    .filter(m -> disponibilidadeRepository.existsByMedico(m))
+                    .filter(m -> !disponibilidadeRepository.findByMedico(m).isEmpty())
                     .toList();
         }
 
@@ -106,14 +111,19 @@ public class MedicoService {
         Medico medico = medicoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Médico não encontrado"));
 
-        if (!medico.isAtivo()) {
+        if (!medico.getAtivo()) {
             throw new RuntimeException("Médico já está inativo");
         }
 
+        List<Consulta> consultasFuturas = consultaRepository
+                .findByMedicoIdAndDataHoraAfter(id, LocalDateTime.now());
+
+        if (!consultasFuturas.isEmpty()) {
+            throw new RuntimeException("Não é possível remover o médico pois existem consultas futuras");
+        }
+
         medico.setAtivo(false);
-
         medicoRepository.save(medico);
-
         return new ApiResponse<>("Médico desativado com sucesso");
     }
 

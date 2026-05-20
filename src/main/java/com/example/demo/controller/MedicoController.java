@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
-@RequestMapping("/medicos")
+@RequestMapping("/api/medicos")
 public class MedicoController {
 
     private final MedicoService medicoService;
