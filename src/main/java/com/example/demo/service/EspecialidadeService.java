@@ -74,8 +74,14 @@ public class EspecialidadeService {
         Especialidade especialidade = especialidadeRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Especialidade não encontrada"));
 
-        especialidadeRepository.delete(especialidade);
+        if (!especialidade.isAtivo()) {
+            throw new RuntimeException("Especialidade já está inativa");
+        }
 
-        return new ApiResponse<>("Especialidade removida com sucesso");
+        especialidade.setAtivo(false);
+
+        especialidadeRepository.save(especialidade);
+
+        return new ApiResponse<>("Especialidade desativada com sucesso");
     }
 }

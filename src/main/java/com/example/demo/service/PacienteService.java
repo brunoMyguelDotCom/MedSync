@@ -1,4 +1,4 @@
-package com.example.demo.service.Utils;
+package com.example.demo.service;
 
 import java.util.List;
 
@@ -13,6 +13,8 @@ import com.example.demo.dto.Response.PacienteResponseDTO;
 import com.example.demo.mapper.PacienteMapper;
 import com.example.demo.repository.ConsultaRepository;
 import com.example.demo.repository.PacienteRepository;
+import com.example.demo.service.Utils.ApiResponse;
+import com.example.demo.service.Utils.ErrorResponse;
 
 @Service
 public class PacienteService {
@@ -70,20 +72,37 @@ public class PacienteService {
                 .orElseGet(() -> new ApiResponse<>(new ErrorResponse("Not Found", "Paciente não encontrado")));
     }
 
-    // Método para remover um paciente, verificando se ele tem consultas agendadas
     public ApiResponse<String> removerPaciente(Long id) {
+
         return pacienteRepository.findById(id)
                 .map(paciente -> {
+
+                    if (!paciente.isAtivo()) {
+                        return new ApiResponse<String>(
+                                new ErrorResponse("Forbidden",
+                                        "Paciente já está inativo"));
+                    }
+
                     boolean temConsultasAgendadas = consultaRepository.findByPacienteId(id)
                             .stream()
                             .anyMatch(consulta -> consulta.getStatus() == StatusConsulta.AGENDADA);
+
                     if (temConsultasAgendadas) {
-                        return new ApiResponse<String>(new ErrorResponse("Forbidden",
-                                "Não é permitido remover paciente com consultas agendadas"));
+                        return new ApiResponse<String>(
+                                new ErrorResponse(
+                                        "Forbidden",
+                                        "Não é permitido remover paciente com consultas agendadas"));
                     }
-                    pacienteRepository.delete(paciente);
-                    return new ApiResponse<>("Paciente removido com sucesso");
+
+                    paciente.setAtivo(false);
+
+                    pacienteRepository.save(paciente);
+
+                    return new ApiResponse<>("Paciente desativado com sucesso");
                 })
-                .orElseGet(() -> new ApiResponse<>(new ErrorResponse("Not Found", "Paciente não encontrado")));
+                .orElseGet(() -> new ApiResponse<>(
+                        new ErrorResponse(
+                                "Not Found",
+                                "Paciente não encontrado")));
     }
 }

@@ -106,16 +106,12 @@ public class MedicoService {
         Medico medico = medicoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Médico não encontrado"));
 
-        if (!medico.getAtivo()) {
+        if (!medico.isAtivo()) {
             throw new RuntimeException("Médico já está inativo");
         }
 
-        // if (consultaRepository.existsByMedico_Id(id)) {
-        // throw new RuntimeException("Não é possível remover o médico pois existem
-        // consultas vinculadas");
-        // }
-
         medico.setAtivo(false);
+
         medicoRepository.save(medico);
 
         return new ApiResponse<>("Médico desativado com sucesso");

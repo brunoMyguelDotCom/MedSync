@@ -1,47 +1,38 @@
 package com.example.demo.controller;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import com.example.demo.dto.Request.ConsultaRequestDTO;
 import com.example.demo.dto.Response.ConsultaResponseDTO;
 import com.example.demo.service.ConsultaService;
 import com.example.demo.service.Utils.ApiResponse;
 
-
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-
 @RestController
 @RequestMapping("/consultas")
 public class ConsultaController {
 
-    // Atributo para receber o service
     private final ConsultaService consultaService;
 
-    // Construtor para injetar o service
     public ConsultaController(ConsultaService consultaService) {
         this.consultaService = consultaService;
     }
 
-    // Endpoint para listar consulta por ID
+    // Buscar consulta por ID
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<ConsultaResponseDTO>> listarPorId(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<ConsultaResponseDTO>> listarPorId(
+            @PathVariable Long id) {
 
         var response = consultaService.listarPorId(id);
 
         return ResponseEntity.ok(response);
     }
 
-    // Endpoint para listar todas as consultas
+    // Listar consultas
     @GetMapping
     public ResponseEntity<ApiResponse<List<ConsultaResponseDTO>>> listaTodos() {
 
@@ -50,7 +41,7 @@ public class ConsultaController {
         return ResponseEntity.ok(response);
     }
 
-    // Endpoint para criar uma nova consulta
+    // Criar consulta
     @PostMapping
     public ResponseEntity<ApiResponse<ConsultaResponseDTO>> criarConsulta(
             @RequestBody ConsultaRequestDTO consultaRequestDTO) {
@@ -60,14 +51,26 @@ public class ConsultaController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    // Atualizar status
     @PatchMapping("/{id}/status")
     public ResponseEntity<ApiResponse<ConsultaResponseDTO>> atualizarStatus(
-            @PathVariable long id,
-
-            // dentro do JSAON, ex: "status" : "CONCLUIDA"
+            @PathVariable Long id,
             @RequestBody Map<String, String> body) {
+
         String novoStatus = body.get("status");
-        return ResponseEntity.ok(consultaService.atualizarStatus(id, novoStatus));
+
+        var response = consultaService.atualizarStatus(id, novoStatus);
+
+        return ResponseEntity.ok(response);
     }
 
+    // Cancelar consulta
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<String>> cancelarConsulta(
+            @PathVariable Long id) {
+
+        var response = consultaService.cancelarConsulta(id);
+
+        return ResponseEntity.ok(response);
+    }
 }
