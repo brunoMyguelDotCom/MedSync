@@ -27,6 +27,7 @@ public class MedicoService {
 
     public MedicoService(MedicoRepository medicoRepository, EspecialidadeRepository especialidadeRepository,
             DisponibilidadeRepository disponibilidadeRepository, ConsultaRepository consultaRepository) {
+
         this.medicoRepository = medicoRepository;
         this.especialidadeRepository = especialidadeRepository;
         this.disponibilidadeRepository = disponibilidadeRepository;
@@ -123,7 +124,6 @@ public class MedicoService {
 
         medico.setAtivo(false);
         medicoRepository.save(medico);
-
         return new ApiResponse<>("Médico desativado com sucesso");
     }
 

@@ -27,7 +27,6 @@ public class Disponibilidade {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // relacionamento com medico (igual consulta)
     @ManyToOne(optional = false)
     @JoinColumn(name = "medico_id")
     private Medico medico;
@@ -51,4 +50,7 @@ public class Disponibilidade {
         this.horarioInicio = horarioInicio;
         this.horarioFim = horarioFim;
     }
+
+    @Column(nullable = false)
+    private boolean ativo = true;
 }

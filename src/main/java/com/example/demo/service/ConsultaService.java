@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.example.demo.Entities.Consulta;
 import com.example.demo.Entities.Medico;
 import com.example.demo.Entities.Paciente;
+import com.example.demo.Entities.Enums.StatusConsulta;
 import com.example.demo.dto.Request.ConsultaRequestDTO;
 import com.example.demo.dto.Response.ConsultaResponseDTO;
 import com.example.demo.mapper.ConsultaMapper;
@@ -74,28 +75,56 @@ public class ConsultaService {
 
     }
 
-    public ApiResponse<ConsultaResponseDTO> atualizarStatus(long id, String novoStatus) {
+    public ApiResponse<ConsultaResponseDTO> atualizarStatus(
+            Long id,
+            String novoStatus) {
 
         Consulta consulta = consultaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Consulta não encontrada"));
 
-        switch (novoStatus.toUpperCase()) {
-            case "CANCELADA":
-                consulta.cancelar(LocalDateTime.now());
-                break;
+        StatusConsulta status;
 
-            case "CONCLUIDA":
-                consulta.concluir();
-                break;
+        try {
+            status = StatusConsulta.valueOf(novoStatus.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("Status inválido");
+        }
 
-            default:
-                throw new RuntimeException("Status inválido: " + novoStatus);
+        // impedir cancelamento via PATCH
+        if (status == StatusConsulta.CANCELADA) {
+            throw new RuntimeException(
+                    "Use o endpoint DELETE /consultas/{id} para cancelar consultas");
+        }
 
+        if (status == StatusConsulta.CONCLUIDA) {
+            consulta.concluir();
         }
 
         consultaRepository.save(consulta);
 
-        return new ApiResponse<>(ConsultaMapper.toConsultaResponseDTO(consulta));
+        return new ApiResponse<>(
+                ConsultaMapper.toConsultaResponseDTO(consulta));
+    }
+
+    // cancelar consulta
+    public ApiResponse<String> cancelarConsulta(Long id) {
+
+        Consulta consulta = consultaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Consulta não encontrada"));
+
+        if (consulta.getStatus() == StatusConsulta.CANCELADA) {
+            throw new RuntimeException("Consulta já está cancelada");
+        }
+
+        if (consulta.getStatus() == StatusConsulta.CONCLUIDA) {
+            throw new RuntimeException("Consulta já foi concluída");
+        }
+
+        consulta.cancelar(LocalDateTime.now());
+
+        consultaRepository.save(consulta);
+
+        return new ApiResponse<>("Consulta cancelada com sucesso");
     }
 
 }

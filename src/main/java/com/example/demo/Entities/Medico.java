@@ -41,5 +41,6 @@ public class Medico {
     @JoinColumn(name = "especialidade_id")
     private Especialidade especialidade;
 
-    private Boolean ativo = true;
+    @Column(nullable = false)
+    private boolean ativo = true;
 }

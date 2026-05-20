@@ -21,53 +21,49 @@ import com.example.demo.service.Utils.ApiResponse;
 @RequestMapping("/medicos/{medicoId}/disponibilidades")
 public class DisponibilidadeController {
 
-    private final DisponibilidadeService disponibilidadeService;
+        private final DisponibilidadeService disponibilidadeService;
 
-    public DisponibilidadeController(
-            DisponibilidadeService disponibilidadeService) {
+        public DisponibilidadeController(
+                        DisponibilidadeService disponibilidadeService) {
 
-        this.disponibilidadeService = disponibilidadeService;
-    }
+                this.disponibilidadeService = disponibilidadeService;
+        }
 
-    @PostMapping
-    public ResponseEntity<ApiResponse<DisponibilidadeResponseDTO>>
-            registrarDisponibilidade(
-                    @PathVariable Long medicoId,
+        @PostMapping
+        public ResponseEntity<ApiResponse<DisponibilidadeResponseDTO>> registrarDisponibilidade(
+                        @PathVariable Long medicoId,
 
-                    @RequestBody
-                    DisponibilidadeRequestDTO disponibilidadeRequestDTO) {
+                        @RequestBody DisponibilidadeRequestDTO disponibilidadeRequestDTO) {
 
-        ApiResponse<DisponibilidadeResponseDTO> response =
-                disponibilidadeService.registrarDisponibilidade(
-                        medicoId,
-                        disponibilidadeRequestDTO);
+                ApiResponse<DisponibilidadeResponseDTO> response = disponibilidadeService.registrarDisponibilidade(
+                                medicoId,
+                                disponibilidadeRequestDTO);
 
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(response);
-    }
+                return ResponseEntity
+                                .status(HttpStatus.CREATED)
+                                .body(response);
+        }
 
-    @GetMapping
-    public ResponseEntity<ApiResponse<List<DisponibilidadeResponseDTO>>>
-            listarDisponibilidadesPorMedico(
+        @GetMapping
+        public ResponseEntity<ApiResponse<List<DisponibilidadeResponseDTO>>> listarDisponibilidadesPorMedico(
 
-                    @PathVariable Long medicoId) {
+                        @PathVariable Long medicoId) {
 
-        ApiResponse<List<DisponibilidadeResponseDTO>> response =
-                disponibilidadeService
-                        .listarDisponibilidadesPorMedico(medicoId);
+                ApiResponse<List<DisponibilidadeResponseDTO>> response = disponibilidadeService
+                                .listarDisponibilidadesPorMedico(medicoId);
 
-        return ResponseEntity.ok(response);
-    }
+                return ResponseEntity.ok(response);
+        }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> removerDisponibilidade(
+        @DeleteMapping("/{id}")
+        public ResponseEntity<ApiResponse<String>> removerDisponibilidade(
 
-            @PathVariable Long medicoId,
-            @PathVariable Long id) {
+                        @PathVariable Long medicoId,
+                        @PathVariable Long id) {
 
-        disponibilidadeService.removerDisponibilidade(id);
+                disponibilidadeService.removerDisponibilidade(id);
 
-        return ResponseEntity.noContent().build();
-    }
+                return ResponseEntity.ok(
+                                new ApiResponse<>("Disponibilidade desativada com sucesso"));
+        }
 }
