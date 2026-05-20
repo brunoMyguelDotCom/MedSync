@@ -20,10 +20,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 
-
-
 @RestController
-@RequestMapping("/medicos")
+@RequestMapping("/api/medicos")
 public class MedicoController {
 
     private final MedicoService medicoService;
@@ -32,7 +30,7 @@ public class MedicoController {
         this.medicoService = medicoService;
     }
 
-    //ENDPOINT CRIAR MEDICO
+    // ENDPOINT CRIAR MEDICO
     @PostMapping
     public ResponseEntity<ApiResponse<MedicoResponseDTO>> criarMedico(
             @RequestBody MedicoRequestDTO medicoRequestDTO) {
@@ -42,38 +40,38 @@ public class MedicoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    //ENDPOINT LISTAR MEDICOS
+    // ENDPOINT LISTAR MEDICOS
     @GetMapping
-    public ResponseEntity<ApiResponse<List<MedicoResponseDTO>>> listarMedicos(@RequestParam(required = false) Long especialidadeId, Boolean disponibilidade){
-    
-        ApiResponse<List<MedicoResponseDTO>> response = medicoService.listarMedicos(especialidadeId,disponibilidade);
+    public ResponseEntity<ApiResponse<List<MedicoResponseDTO>>> listarMedicos(
+            @RequestParam(required = false) Long especialidadeId, Boolean disponibilidade) {
+
+        ApiResponse<List<MedicoResponseDTO>> response = medicoService.listarMedicos(especialidadeId, disponibilidade);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    //ENDPOINT BUSCAR MEDICO POR ID
+    // ENDPOINT BUSCAR MEDICO POR ID
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<MedicoResponseDTO>> buscarMedico(@PathVariable Long id){
-        
+    public ResponseEntity<ApiResponse<MedicoResponseDTO>> buscarMedico(@PathVariable Long id) {
+
         ApiResponse<MedicoResponseDTO> response = medicoService.buscarMedico(id);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
-    
-    //ENDPOINT ATUALIZAR MEDICOS
+
+    // ENDPOINT ATUALIZAR MEDICOS
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<MedicoResponseDTO>> atualizarMedico
-    (@PathVariable Long id, @RequestBody MedicoRequestDTO medicoRequestDTO){
-        
+    public ResponseEntity<ApiResponse<MedicoResponseDTO>> atualizarMedico(@PathVariable Long id,
+            @RequestBody MedicoRequestDTO medicoRequestDTO) {
+
         ApiResponse<MedicoResponseDTO> response = medicoService.atualizarMedico(id, medicoRequestDTO);
-        
+
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
-    
-    //ENDPOINT REMOVER MEDICOS
+
+    // ENDPOINT REMOVER MEDICOS
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<String>> removerMedico
-    (@PathVariable Long id){
+    public ResponseEntity<ApiResponse<String>> removerMedico(@PathVariable Long id) {
 
         ApiResponse<String> response = medicoService.removerMedico(id);
 

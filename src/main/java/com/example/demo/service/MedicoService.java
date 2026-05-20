@@ -1,9 +1,11 @@
 package com.example.demo.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.example.demo.Entities.Consulta;
 import com.example.demo.Entities.Especialidade;
 import com.example.demo.Entities.Medico;
 import com.example.demo.dto.Request.MedicoRequestDTO;
@@ -21,11 +23,14 @@ public class MedicoService {
     private final DisponibilidadeRepository disponibilidadeRepository;
     private final MedicoRepository medicoRepository;
     private final EspecialidadeRepository especialidadeRepository;
+    private final ConsultaRepository consultaRepository;
 
-    public MedicoService(MedicoRepository medicoRepository, EspecialidadeRepository especialidadeRepository,DisponibilidadeRepository disponibilidadeRepository) {
+    public MedicoService(MedicoRepository medicoRepository, EspecialidadeRepository especialidadeRepository,
+            DisponibilidadeRepository disponibilidadeRepository, ConsultaRepository consultaRepository) {
         this.medicoRepository = medicoRepository;
         this.especialidadeRepository = especialidadeRepository;
         this.disponibilidadeRepository = disponibilidadeRepository;
+        this.consultaRepository = consultaRepository;
     }
 
     // CRIAR MEDICO
@@ -45,28 +50,28 @@ public class MedicoService {
     }
 
     // LISTAR MEDICO
-public ApiResponse<List<MedicoResponseDTO>> listarMedicos(Long especialidadeId, Boolean disponivel) {
+    public ApiResponse<List<MedicoResponseDTO>> listarMedicos(Long especialidadeId, Boolean disponivel) {
 
-    List<Medico> medicos;
+        List<Medico> medicos;
 
-    if (especialidadeId != null) {
-        medicos = medicoRepository.findByEspecialidade_Id(especialidadeId);
-    } else {
-        medicos = medicoRepository.findAll();
-    }
+        if (especialidadeId != null) {
+            medicos = medicoRepository.findByEspecialidade_Id(especialidadeId);
+        } else {
+            medicos = medicoRepository.findAll();
+        }
 
-    if (Boolean.TRUE.equals(disponivel)) {
-        medicos = medicos.stream()
-                .filter(m -> disponibilidadeRepository.existsByMedico(m))
+        if (Boolean.TRUE.equals(disponivel)) {
+            medicos = medicos.stream()
+                    .filter(m -> !disponibilidadeRepository.findByMedico(m).isEmpty())
+                    .toList();
+        }
+
+        List<MedicoResponseDTO> listar = medicos.stream()
+                .map(MedicoMapper::toMedicoResponseDTO)
                 .toList();
+
+        return new ApiResponse<>(listar);
     }
-
-    List<MedicoResponseDTO> listar = medicos.stream()
-            .map(MedicoMapper::toMedicoResponseDTO)
-            .toList();
-
-    return new ApiResponse<>(listar);
-}
 
     // BUSCAR MEDICO
     public ApiResponse<MedicoResponseDTO> buscarMedico(Long id) {
@@ -102,21 +107,24 @@ public ApiResponse<List<MedicoResponseDTO>> listarMedicos(Long especialidadeId, 
     // REMOVER MEDICO
     public ApiResponse<String> removerMedico(Long id) {
 
-    Medico medico = medicoRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Médico não encontrado"));
+        Medico medico = medicoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Médico não encontrado"));
 
-    if (!medico.getAtivo()) {
-        throw new RuntimeException("Médico já está inativo");
+        if (!medico.getAtivo()) {
+            throw new RuntimeException("Médico já está inativo");
+        }
+
+        List<Consulta> consultasFuturas = consultaRepository
+                .findByMedicoIdAndDataHoraAfter(id, LocalDateTime.now());
+
+        if (!consultasFuturas.isEmpty()) {
+            throw new RuntimeException("Não é possível remover o médico pois existem consultas futuras");
+        }
+
+        medico.setAtivo(false);
+        medicoRepository.save(medico);
+
+        return new ApiResponse<>("Médico desativado com sucesso");
     }
-
-    // if (consultaRepository.existsByMedico_Id(id)) {
-    //     throw new RuntimeException("Não é possível remover o médico pois existem consultas vinculadas");
-    // }
-
-    medico.setAtivo(false);
-    medicoRepository.save(medico);
-
-    return new ApiResponse<>("Médico desativado com sucesso");
-}
 
 }
