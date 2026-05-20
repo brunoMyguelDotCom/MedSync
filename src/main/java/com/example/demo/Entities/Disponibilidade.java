@@ -50,4 +50,7 @@ public class Disponibilidade {
         this.horarioInicio = horarioInicio;
         this.horarioFim = horarioFim;
     }
+
+    @Column(nullable = false)
+    private boolean ativo = true;
 }

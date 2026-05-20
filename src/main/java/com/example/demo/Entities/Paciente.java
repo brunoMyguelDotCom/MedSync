@@ -42,4 +42,7 @@ public class Paciente {
     @Email
     @Column(unique = true)
     private String email;
+
+    @Column(nullable = false)
+    private boolean ativo = true;
 }
