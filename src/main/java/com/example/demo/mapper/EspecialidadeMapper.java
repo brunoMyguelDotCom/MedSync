@@ -7,6 +7,7 @@ import com.example.demo.dto.Response.EspecialidadeResponseDTO;
 public class EspecialidadeMapper {
 
     public static EspecialidadeResponseDTO toEspecialidadeResponseDTO(Especialidade especialidade) {
+
         return new EspecialidadeResponseDTO(
                 especialidade.getId(),
                 especialidade.getNome());
@@ -14,7 +15,10 @@ public class EspecialidadeMapper {
 
     public static Especialidade toEntityEspecialidade(EspecialidadeRequestDTO dto) {
 
-        return new Especialidade(0, dto.nome());
-    }
+        Especialidade especialidade = new Especialidade();
 
+        especialidade.setNome(dto.nome());
+
+        return especialidade;
+    }
 }
