@@ -13,7 +13,7 @@ import com.example.demo.service.ConsultaService;
 import com.example.demo.service.Utils.ApiResponse;
 
 @RestController
-@RequestMapping("/consultas")
+@RequestMapping("/api/consultas")
 public class ConsultaController {
 
     private final ConsultaService consultaService;

@@ -17,7 +17,7 @@ public interface ConsultaRepository extends JpaRepository<Consulta, Long> {
     // consulta futura do medico
     List<Consulta> findByMedicoIdAndDataHoraAfter(Long medicoId, LocalDateTime dataHora);
 
-    // cnosuta paciente
+    // consulta paciente
     List<Consulta> findByPacienteId(Long pacienteId);
 
     // filtro por periodo
@@ -25,4 +25,10 @@ public interface ConsultaRepository extends JpaRepository<Consulta, Long> {
 
     // filtro por status
     List<Consulta> findByStatus(StatusConsulta status);
+
+    
+    boolean existsByMedicoAndDataHoraAndStatus(
+        Medico medico,
+        LocalDateTime dataHora,
+        StatusConsulta status);
 }

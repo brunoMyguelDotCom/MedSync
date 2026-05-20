@@ -18,7 +18,7 @@ import com.example.demo.service.DisponibilidadeService;
 import com.example.demo.service.Utils.ApiResponse;
 
 @RestController
-@RequestMapping("/medicos/{medicoId}/disponibilidades")
+@RequestMapping("/api/medicos/{medicoId}/disponibilidades")
 public class DisponibilidadeController {
 
         private final DisponibilidadeService disponibilidadeService;

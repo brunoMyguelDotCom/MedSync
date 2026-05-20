@@ -13,6 +13,7 @@ import com.example.demo.dto.Request.ConsultaRequestDTO;
 import com.example.demo.dto.Response.ConsultaResponseDTO;
 import com.example.demo.mapper.ConsultaMapper;
 import com.example.demo.repository.ConsultaRepository;
+import com.example.demo.repository.DisponibilidadeRepository;
 import com.example.demo.repository.MedicoRepository;
 import com.example.demo.repository.PacienteRepository;
 import com.example.demo.service.Utils.ApiResponse;
@@ -24,13 +25,86 @@ public class ConsultaService {
     private final PacienteRepository pacienteRepository;
     private final MedicoRepository medicoRepository;
     private final ConsultaRepository consultaRepository;
+    private final DisponibilidadeRepository disponibilidadeRepository;
 
     // Construtor para injetar os repositories
-    public ConsultaService(PacienteRepository pacienteRepository, MedicoRepository medicoRepository,
-            ConsultaRepository consultaRepository) {
+    public ConsultaService(
+            PacienteRepository pacienteRepository,
+            MedicoRepository medicoRepository,
+            ConsultaRepository consultaRepository,
+            DisponibilidadeRepository disponibilidadeRepository) {
+
         this.pacienteRepository = pacienteRepository;
         this.medicoRepository = medicoRepository;
         this.consultaRepository = consultaRepository;
+        this.disponibilidadeRepository = disponibilidadeRepository;
+    }
+
+    public ApiResponse<ConsultaResponseDTO> criarConsulta(
+            ConsultaRequestDTO consultaRequestDTO) {
+
+        Paciente paciente = pacienteRepository.findById(
+                consultaRequestDTO.pacienteId())
+                .orElseThrow(() -> new RuntimeException("Paciente não encontrado"));
+
+        Medico medico = medicoRepository.findById(
+                consultaRequestDTO.medicoId())
+                .orElseThrow(() -> new RuntimeException("Médico não encontrado"));
+
+        // validar data passada
+        if (consultaRequestDTO.dataHora()
+                .isBefore(LocalDateTime.now())) {
+
+            throw new RuntimeException(
+                    "Não é permitido agendar consultas em datas passadas");
+        }
+
+        // validar conflito de horário
+        boolean medicoOcupado = consultaRepository.existsByMedicoAndDataHoraAndStatus(
+                medico,
+                consultaRequestDTO.dataHora(),
+                StatusConsulta.AGENDADA);
+
+        if (medicoOcupado) {
+
+            throw new RuntimeException(
+                    "O médico já possui consulta agendada nesse horário");
+        }
+
+        // validar disponibilidade do médico
+        var disponibilidades = disponibilidadeRepository.findByMedicoAndDiaSemana(
+                medico,
+                consultaRequestDTO.dataHora().getDayOfWeek());
+
+        boolean disponivel = disponibilidades.stream()
+                .anyMatch(disponibilidade ->
+
+                !consultaRequestDTO.dataHora()
+                        .toLocalTime()
+                        .isBefore(disponibilidade.getHorarioInicio())
+
+                        &&
+
+                        !consultaRequestDTO.dataHora()
+                                .toLocalTime()
+                                .isAfter(disponibilidade.getHorarioFim()));
+
+        if (!disponivel) {
+
+            throw new RuntimeException(
+                    "O médico não possui disponibilidade nesse horário");
+        }
+
+        Consulta consulta = ConsultaMapper.toEntityConsulta(
+                consultaRequestDTO,
+                paciente,
+                medico);
+
+        consultaRepository.save(consulta);
+
+        ConsultaResponseDTO dto = ConsultaMapper.toConsultaResponseDTO(consulta);
+
+        return new ApiResponse<>(dto);
     }
 
     // Método para listar consulta por ID
@@ -54,25 +128,6 @@ public class ConsultaService {
                 .toList();
 
         return new ApiResponse<>(consultas);
-    }
-
-    // Método para criar uma nova consulta
-    public ApiResponse<ConsultaResponseDTO> criarConsulta(ConsultaRequestDTO consultaRequestDTO) {
-
-        Paciente paciente = pacienteRepository.findById(consultaRequestDTO.pacienteId())
-                .orElseThrow(() -> new RuntimeException("Paciente não encontrado"));
-
-        Medico medico = medicoRepository.findById(consultaRequestDTO.medicoId())
-                .orElseThrow(() -> new RuntimeException("Médico não encontrado"));
-
-        Consulta consulta = new ConsultaMapper().toEntityConsulta(consultaRequestDTO, paciente, medico);
-
-        consultaRepository.save(consulta);
-
-        ConsultaResponseDTO dto = ConsultaMapper.toConsultaResponseDTO(consulta);
-
-        return new ApiResponse<>(dto);
-
     }
 
     public ApiResponse<ConsultaResponseDTO> atualizarStatus(

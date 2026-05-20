@@ -27,7 +27,6 @@ public class MedicoService {
 
     public MedicoService(MedicoRepository medicoRepository, EspecialidadeRepository especialidadeRepository,
             DisponibilidadeRepository disponibilidadeRepository, ConsultaRepository consultaRepository) {
-
         this.medicoRepository = medicoRepository;
         this.especialidadeRepository = especialidadeRepository;
         this.disponibilidadeRepository = disponibilidadeRepository;
@@ -63,7 +62,7 @@ public class MedicoService {
 
         if (Boolean.TRUE.equals(disponivel)) {
             medicos = medicos.stream()
-                    .filter(m -> !disponibilidadeRepository.findByMedico(m).isEmpty())
+                    .filter(m -> disponibilidadeRepository.findByMedico(m).isEmpty())
                     .toList();
         }
 
@@ -111,7 +110,7 @@ public class MedicoService {
         Medico medico = medicoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Médico não encontrado"));
 
-        if (!medico.getAtivo()) {
+        if (!medico.isAtivo()) {
             throw new RuntimeException("Médico já está inativo");
         }
 
@@ -123,7 +122,9 @@ public class MedicoService {
         }
 
         medico.setAtivo(false);
+
         medicoRepository.save(medico);
+
         return new ApiResponse<>("Médico desativado com sucesso");
     }
 

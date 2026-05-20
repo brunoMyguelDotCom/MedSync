@@ -8,8 +8,6 @@ import com.example.demo.dto.Response.EspecialidadeResponseDTO;
 import com.example.demo.service.EspecialidadeService;
 import com.example.demo.service.Utils.ApiResponse;
 
-
-
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -22,7 +20,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
-@RequestMapping("/especialidade")
+@RequestMapping("/api/especialidade")
 public class EspecialidadeController {
 
     private final EspecialidadeService especialidadeService;

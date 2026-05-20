@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
-@RequestMapping("/pacientes")
+@RequestMapping("/api/pacientes")
 public class PacienteController {
 
     private final PacienteService pacienteService;
@@ -43,7 +43,6 @@ public class PacienteController {
     }
 
     // Listar pacientes
-
     @GetMapping
     public ResponseEntity<ApiResponse<List<PacienteResponseDTO>>> listarTodos(
             @RequestParam(required = false) Integer page,
