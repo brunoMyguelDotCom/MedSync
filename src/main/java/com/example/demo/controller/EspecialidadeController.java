@@ -43,7 +43,7 @@ public class EspecialidadeController {
 
         var response = especialidadeService.listarEspecialidade();
 
-        return (ResponseEntity<ApiResponse<List<EspecialidadeResponseDTO>>>) ResponseEntity.ok();
+        return ResponseEntity.ok(response);
     }
 
     // Buscar especialidade por ID

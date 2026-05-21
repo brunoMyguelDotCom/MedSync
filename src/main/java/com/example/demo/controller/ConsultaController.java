@@ -57,6 +57,7 @@ public class ConsultaController {
             @PathVariable Long id,
             @RequestBody Map<String, String> body) {
 
+        // dentro do json: { "status": "CONFIRMADA" }
         String novoStatus = body.get("status");
 
         var response = consultaService.atualizarStatus(id, novoStatus);
