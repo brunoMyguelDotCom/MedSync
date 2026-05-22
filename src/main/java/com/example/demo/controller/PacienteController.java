@@ -8,7 +8,6 @@ import com.example.demo.service.PacienteService;
 import com.example.demo.service.Utils.ApiResponse;
 
 import jakarta.validation.Valid;
-import lombok.experimental.var;
 
 import java.util.List;
 
