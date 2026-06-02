@@ -41,9 +41,11 @@ public class MedicoController {
     }
 
     // ENDPOINT LISTAR MEDICOS
+    // BUG FIX: adicionado @RequestParam separado para cada parâmetro opcional
     @GetMapping
     public ResponseEntity<ApiResponse<List<MedicoResponseDTO>>> listarMedicos(
-            @RequestParam(required = false) Long especialidadeId, Boolean disponibilidade) {
+            @RequestParam(required = false) Long especialidadeId,
+            @RequestParam(required = false) Boolean disponibilidade) {
 
         ApiResponse<List<MedicoResponseDTO>> response = medicoService.listarMedicos(especialidadeId, disponibilidade);
 
