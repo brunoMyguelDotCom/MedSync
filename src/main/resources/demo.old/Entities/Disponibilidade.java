@@ -1,0 +1,56 @@
+package com.example.demo.Entities;
+
+import java.time.DayOfWeek;
+import java.time.LocalTime;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+@Entity
+@Table(name = "disponibilidades")
+public class Disponibilidade {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "medico_id")
+    private Medico medico;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private DayOfWeek diaSemana;
+
+    @Column(nullable = false)
+    private LocalTime horarioInicio;
+
+    @Column(nullable = false)
+    private LocalTime horarioFim;
+
+    public Disponibilidade() {
+    }
+
+    public Disponibilidade(Medico medico, DayOfWeek diaSemana, LocalTime horarioInicio, LocalTime horarioFim) {
+        this.medico = medico;
+        this.diaSemana = diaSemana;
+        this.horarioInicio = horarioInicio;
+        this.horarioFim = horarioFim;
+    }
+
+    @Column(nullable = false)
+    private boolean ativo = true;
+}

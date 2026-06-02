@@ -43,17 +43,13 @@ public class ConsultaService {
         public ApiResponse<ConsultaResponseDTO> criarConsulta(
                         ConsultaRequestDTO consultaRequestDTO) {
 
-                // BUG FIX: valida que o paciente existe E está ativo
                 Paciente paciente = pacienteRepository.findById(
                                 consultaRequestDTO.pacienteId())
-                                .filter(Paciente::isAtivo)
-                                .orElseThrow(() -> new RuntimeException("Paciente não encontrado ou inativo"));
+                                .orElseThrow(() -> new RuntimeException("Paciente não encontrado"));
 
-                // BUG FIX: valida que o médico existe E está ativo
                 Medico medico = medicoRepository.findById(
                                 consultaRequestDTO.medicoId())
-                                .filter(Medico::isAtivo)
-                                .orElseThrow(() -> new RuntimeException("Médico não encontrado ou inativo"));
+                                .orElseThrow(() -> new RuntimeException("Médico não encontrado"));
 
                 // validar data passada
                 if (consultaRequestDTO.dataHora()
@@ -75,11 +71,10 @@ public class ConsultaService {
                                         "O médico já possui consulta agendada nesse horário");
                 }
 
-                // BUG FIX: valida disponibilidade usando SOMENTE disponibilidades ativas
-                var disponibilidades = disponibilidadeRepository.findByMedicoAndDiaSemanaAndAtivo(
+                // validar disponibilidade do médico
+                var disponibilidades = disponibilidadeRepository.findByMedicoAndDiaSemana(
                                 medico,
-                                consultaRequestDTO.dataHora().getDayOfWeek(),
-                                true);
+                                consultaRequestDTO.dataHora().getDayOfWeek());
 
                 boolean disponivel = disponibilidades.stream()
                                 .anyMatch(disponibilidade ->
@@ -120,6 +115,7 @@ public class ConsultaService {
 
                 ConsultaResponseDTO dto = ConsultaMapper.toConsultaResponseDTO(consulta);
 
+                // por fim, retornamos o ApiResponse com o DTO dentro
                 return new ApiResponse<>(dto);
         }
 

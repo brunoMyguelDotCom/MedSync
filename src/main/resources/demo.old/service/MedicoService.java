@@ -36,10 +36,8 @@ public class MedicoService {
     // CRIAR MEDICO
     public ApiResponse<MedicoResponseDTO> criarMedico(MedicoRequestDTO medicoRequestDTO) {
 
-        // BUG FIX: valida que a especialidade existe E está ativa
         Especialidade especialidade = especialidadeRepository.findById(medicoRequestDTO.especialidadeId())
-                .filter(Especialidade::isAtivo)
-                .orElseThrow(() -> new RuntimeException("Especialidade não encontrada ou inativa"));
+                .orElseThrow(() -> new RuntimeException("Especialidade não encontrada"));
 
         Medico medico = MedicoMapper.toEntityMedico(medicoRequestDTO);
         medico.setEspecialidade(especialidade);
@@ -99,10 +97,8 @@ public class MedicoService {
                 .filter(Medico::isAtivo)
                 .orElseThrow(() -> new RuntimeException("Medico não encontrado"));
 
-        // BUG FIX: valida que a nova especialidade está ativa
         Especialidade especialidade = especialidadeRepository.findById(medicoRequestDTO.especialidadeId())
-                .filter(Especialidade::isAtivo)
-                .orElseThrow(() -> new RuntimeException("Especialidade não encontrada ou inativa"));
+                .orElseThrow(() -> new RuntimeException("Especialidade não encontrada"));
 
         medico.setNome(medicoRequestDTO.nome());
         medico.setCrm(medicoRequestDTO.crm());

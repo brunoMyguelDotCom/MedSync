@@ -10,12 +10,9 @@ import com.example.demo.Entities.Medico;
 
 public interface DisponibilidadeRepository extends JpaRepository<Disponibilidade, Long> {
 
-    // listar disponibilidades ATIVAS do medico
-    List<Disponibilidade> findByMedicoAndAtivo(Medico medico, boolean ativo);
-
-    // buscar por dia da semana (somente ativas)
-    List<Disponibilidade> findByMedicoAndDiaSemanaAndAtivo(Medico medico, DayOfWeek diaSemana, boolean ativo);
-
-    // manter compatibilidade (retorna todas — usado apenas internamente onde necessário)
+    // listar disponibilidades do medico
     List<Disponibilidade> findByMedico(Medico medico);
+
+    // buscar por dia da semana
+    List<Disponibilidade> findByMedicoAndDiaSemana(Medico medico, DayOfWeek diaSemana);
 }

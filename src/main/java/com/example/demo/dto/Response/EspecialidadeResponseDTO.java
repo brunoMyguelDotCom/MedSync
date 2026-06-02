@@ -1,5 +1,5 @@
 package com.example.demo.dto.Response;
 
-public record EspecialidadeResponseDTO(Long id, String nome){
+public record EspecialidadeResponseDTO(Long id, String nome, boolean ativo) {
 
 }

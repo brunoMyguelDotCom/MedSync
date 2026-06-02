@@ -31,12 +31,11 @@ public class EspecialidadeService {
         return new ApiResponse<>(dto);
     }
 
-    // BUG FIX: listar apenas especialidades ativas
+    // Listar Especialidade
     public ApiResponse<List<EspecialidadeResponseDTO>> listarEspecialidade() {
 
         List<EspecialidadeResponseDTO> especialidades = especialidadeRepository.findAll()
                 .stream()
-                .filter(Especialidade::isAtivo)
                 .map(EspecialidadeMapper::toEspecialidadeResponseDTO)
                 .toList();
 
@@ -46,10 +45,8 @@ public class EspecialidadeService {
 
     // Buscar Especialidade
     public ApiResponse<EspecialidadeResponseDTO> buscarPorId(long id) {
-        // BUG FIX: só retorna se estiver ativa
         Especialidade especialidade = especialidadeRepository.findById(id)
-                .filter(Especialidade::isAtivo)
-                .orElseThrow(() -> new RuntimeException("Especialidade não encontrada ou inativa"));
+                .orElseThrow(() -> new RuntimeException("Especialidade nao encontrada"));
 
         EspecialidadeResponseDTO dto = EspecialidadeMapper.toEspecialidadeResponseDTO(especialidade);
 
@@ -59,10 +56,8 @@ public class EspecialidadeService {
     // Atualizar especialidade
     public ApiResponse<EspecialidadeResponseDTO> atualizarEspecialidade(Long id, EspecialidadeRequestDTO dto) {
 
-        // BUG FIX: só atualiza se estiver ativa
         Especialidade especialidade = especialidadeRepository.findById(id)
-                .filter(Especialidade::isAtivo)
-                .orElseThrow(() -> new RuntimeException("Especialidade não encontrada ou inativa"));
+                .orElseThrow(() -> new RuntimeException("Especialidade não encontrada"));
 
         especialidade.setNome(dto.nome());
 

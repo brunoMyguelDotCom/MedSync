@@ -32,10 +32,8 @@ public class DisponibilidadeService {
                         Long medicoId,
                         DisponibilidadeRequestDTO disponibilidadeRequestDTO) {
 
-                // BUG FIX: valida que o médico existe E está ativo
                 Medico medico = medicoRepository.findById(medicoId)
-                                .filter(Medico::isAtivo)
-                                .orElseThrow(() -> new RuntimeException("Médico não encontrado ou inativo"));
+                                .orElseThrow(() -> new RuntimeException("Médico não encontrado"));
 
                 // Validação de horário
                 if (!disponibilidadeRequestDTO.horarioInicio()
@@ -45,14 +43,12 @@ public class DisponibilidadeService {
                                         "Horário de início deve ser anterior ao horário de fim");
                 }
 
-                // BUG FIX: busca SOMENTE disponibilidades ativas para verificar conflito
-                List<Disponibilidade> disponibilidadesExistentes = disponibilidadeRepository
-                                .findByMedicoAndDiaSemanaAndAtivo(
-                                                medico,
-                                                disponibilidadeRequestDTO.diaSemana(),
-                                                true);
+                // Busca disponibilidades já cadastradas para o médico no mesmo dia
+                List<Disponibilidade> disponibilidadesExistentes = disponibilidadeRepository.findByMedicoAndDiaSemana(
+                                medico,
+                                disponibilidadeRequestDTO.diaSemana());
 
-                // Verificar conflito de horário
+                // Verificar horário
                 for (Disponibilidade disponibilidadeExistente : disponibilidadesExistentes) {
 
                         boolean possuiConflito = disponibilidadeRequestDTO.horarioInicio()
@@ -88,9 +84,7 @@ public class DisponibilidadeService {
                 Medico medico = medicoRepository.findById(medicoId)
                                 .orElseThrow(() -> new RuntimeException("Médico não encontrado"));
 
-                // BUG FIX: retorna apenas disponibilidades ativas
-                List<DisponibilidadeResponseDTO> lista = disponibilidadeRepository
-                                .findByMedicoAndAtivo(medico, true)
+                List<DisponibilidadeResponseDTO> lista = disponibilidadeRepository.findByMedico(medico)
                                 .stream()
                                 .map(DisponibilidadeMapper::toDisponibilidadeResponseDTO)
                                 .toList();

@@ -10,8 +10,7 @@ public class EspecialidadeMapper {
 
         return new EspecialidadeResponseDTO(
                 especialidade.getId(),
-                especialidade.getNome(),
-                especialidade.isAtivo());
+                especialidade.getNome());
     }
 
     public static Especialidade toEntityEspecialidade(EspecialidadeRequestDTO dto) {

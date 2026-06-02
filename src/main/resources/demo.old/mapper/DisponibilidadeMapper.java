@@ -28,8 +28,7 @@ public class DisponibilidadeMapper {
                 disponibilidade.getMedico().getNome(),
                 disponibilidade.getDiaSemana(),
                 disponibilidade.getHorarioInicio(),
-                disponibilidade.getHorarioFim(),
-                disponibilidade.isAtivo());
+                disponibilidade.getHorarioFim());
     }
 
 }

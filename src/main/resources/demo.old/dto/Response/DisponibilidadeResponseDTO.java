@@ -9,7 +9,6 @@ public record DisponibilidadeResponseDTO(
     String nomeMedico,
     DayOfWeek diaSemana,
     LocalTime horarioInicio,
-    LocalTime horarioFim,
-    boolean ativo
+    LocalTime horarioFim
 
 ) {}
