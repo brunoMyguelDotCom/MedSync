@@ -5,5 +5,6 @@ public record PacienteResponseDTO(
     String nome,
     String cpf,
     String telefone,
-    String email
+    String email,
+    boolean ativo
 ) {}

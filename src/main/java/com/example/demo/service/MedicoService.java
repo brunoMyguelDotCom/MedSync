@@ -49,7 +49,7 @@ public class MedicoService {
         return new ApiResponse<>(response);
     }
 
-    // LISTAR MEDICO
+    // LISTAR MEDICO — retorna apenas médicos ativos
     public ApiResponse<List<MedicoResponseDTO>> listarMedicos(Long especialidadeId, Boolean disponivel) {
 
         List<Medico> medicos;
@@ -59,6 +59,11 @@ public class MedicoService {
         } else {
             medicos = medicoRepository.findAll();
         }
+
+        // Filtrar apenas ativos
+        medicos = medicos.stream()
+                .filter(Medico::isAtivo)
+                .toList();
 
         if (Boolean.TRUE.equals(disponivel)) {
             medicos = medicos.stream()
@@ -73,10 +78,11 @@ public class MedicoService {
         return new ApiResponse<>(listar);
     }
 
-    // BUSCAR MEDICO
+    // BUSCAR MEDICO — somente ativo
     public ApiResponse<MedicoResponseDTO> buscarMedico(Long id) {
 
         Medico medico = medicoRepository.findById(id)
+                .filter(Medico::isAtivo)
                 .orElseThrow(() -> new RuntimeException("Medico não encontrado"));
 
         MedicoResponseDTO dto = MedicoMapper.toMedicoResponseDTO(medico);
@@ -88,6 +94,7 @@ public class MedicoService {
     public ApiResponse<MedicoResponseDTO> atualizarMedico(Long id, MedicoRequestDTO medicoRequestDTO) {
 
         Medico medico = medicoRepository.findById(id)
+                .filter(Medico::isAtivo)
                 .orElseThrow(() -> new RuntimeException("Medico não encontrado"));
 
         Especialidade especialidade = especialidadeRepository.findById(medicoRequestDTO.especialidadeId())

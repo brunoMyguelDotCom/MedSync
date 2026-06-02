@@ -35,33 +35,38 @@ public class PacienteService {
         return new ApiResponse<>(response);
     }
 
-    // Método para listar todos os pacientes com paginação opcional
+    // Método para listar apenas pacientes ativos com paginação opcional
     public ApiResponse<List<PacienteResponseDTO>> listarTodos(Integer page, Integer size) {
         List<PacienteResponseDTO> pacientes;
         if (page != null && size != null) {
             Pageable pageable = PageRequest.of(page, size);
             pacientes = pacienteRepository.findAll(pageable)
+                    .stream()
+                    .filter(Paciente::isAtivo)
                     .map(PacienteMapper::toPacienteResponseDTO)
                     .toList();
         } else {
             pacientes = pacienteRepository.findAll()
                     .stream()
+                    .filter(Paciente::isAtivo)
                     .map(PacienteMapper::toPacienteResponseDTO)
                     .toList();
         }
         return new ApiResponse<>(pacientes);
     }
 
-    // Método para buscar um paciente por ID
+    // Método para buscar um paciente por ID (somente ativo)
     public ApiResponse<PacienteResponseDTO> buscarPorId(Long id) {
         return pacienteRepository.findById(id)
+                .filter(Paciente::isAtivo)
                 .map(paciente -> new ApiResponse<>(PacienteMapper.toPacienteResponseDTO(paciente)))
                 .orElseGet(() -> new ApiResponse<>(new ErrorResponse("Not Found", "Paciente não encontrado")));
     }
 
-    // Método para atualizar um paciente existente
+    // Método para atualizar um paciente existente (somente ativo)
     public ApiResponse<PacienteResponseDTO> atualizarPaciente(Long id, PacienteRequestDTO pacienteRequestDTO) {
         return pacienteRepository.findById(id)
+                .filter(Paciente::isAtivo)
                 .map(paciente -> {
                     paciente.setNome(pacienteRequestDTO.nome());
                     paciente.setTelefone(pacienteRequestDTO.telefone());
@@ -95,7 +100,6 @@ public class PacienteService {
                     }
 
                     paciente.setAtivo(false);
-
                     pacienteRepository.save(paciente);
 
                     return new ApiResponse<>("Paciente desativado com sucesso");
