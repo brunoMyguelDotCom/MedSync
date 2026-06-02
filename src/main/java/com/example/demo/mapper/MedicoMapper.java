@@ -11,7 +11,8 @@ public class MedicoMapper {
                 medico.getId(),
                 medico.getNome(),
                 medico.getCrm(),
-                medico.getEspecialidade().getNome() // retorna só o nome
+                medico.getEspecialidade().getNome(),
+                medico.isAtivo()
         );
     }
 
