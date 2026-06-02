@@ -36,7 +36,6 @@ public class MedicoService {
     // CRIAR MEDICO
     public ApiResponse<MedicoResponseDTO> criarMedico(MedicoRequestDTO medicoRequestDTO) {
 
-        // BUG FIX: valida que a especialidade existe E está ativa
         Especialidade especialidade = especialidadeRepository.findById(medicoRequestDTO.especialidadeId())
                 .filter(Especialidade::isAtivo)
                 .orElseThrow(() -> new RuntimeException("Especialidade não encontrada ou inativa"));
@@ -51,7 +50,8 @@ public class MedicoService {
         return new ApiResponse<>(response);
     }
 
-    // LISTAR MEDICO — retorna apenas médicos ativos
+    // LISTAR MEDICOS — retorna apenas médicos ativos
+    // BUG FIX: filtro disponivel=true agora retorna médicos COM disponibilidade cadastrada (era o inverso)
     public ApiResponse<List<MedicoResponseDTO>> listarMedicos(Long especialidadeId, Boolean disponivel) {
 
         List<Medico> medicos;
@@ -68,8 +68,9 @@ public class MedicoService {
                 .toList();
 
         if (Boolean.TRUE.equals(disponivel)) {
+            // BUG FIX: retorna médicos que TÊM disponibilidade ativa (não os sem)
             medicos = medicos.stream()
-                    .filter(m -> disponibilidadeRepository.findByMedico(m).isEmpty())
+                    .filter(m -> !disponibilidadeRepository.findByMedicoAndAtivo(m, true).isEmpty())
                     .toList();
         }
 
@@ -99,7 +100,6 @@ public class MedicoService {
                 .filter(Medico::isAtivo)
                 .orElseThrow(() -> new RuntimeException("Medico não encontrado"));
 
-        // BUG FIX: valida que a nova especialidade está ativa
         Especialidade especialidade = especialidadeRepository.findById(medicoRequestDTO.especialidadeId())
                 .filter(Especialidade::isAtivo)
                 .orElseThrow(() -> new RuntimeException("Especialidade não encontrada ou inativa"));
