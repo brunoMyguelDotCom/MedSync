@@ -59,6 +59,12 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- Jackson para suporte a Java 8 Date/Time API -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+        </dependency>
+
         <!--  Swagger pelo SpringDoc -->
         <dependency>
             <groupId>org.springdoc</groupId>
